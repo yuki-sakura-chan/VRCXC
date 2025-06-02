@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/vrcxc
+    username: user
+    password: 123
+  data:
+    redis:
+      database: 0
+      host: 127.0.0.1
+      port: 6379
+server:
+  port: 8082
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+jwt:
+  public-key: |
+
+  private-key: |
+
+  expiration: 300
+  refresh-expiration: 86400

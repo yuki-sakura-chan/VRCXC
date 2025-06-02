@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: VRCXC
+  profiles:
+    active: dev

@@ -1,0 +1,21 @@
+services:
+  mariadb-vrcxc:
+    image: mariadb:latest
+    container_name: mariadb-vrcxc
+    ports:
+      - "3306:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=123
+      - MARIADB_DATABASE=vrcxc
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=123
+    volumes:
+      - ${USERPROFILE:-~/.var}/playlist-data/mariadb-vrcxc/data:/var/lib/mysql
+      - ${USERPROFILE:-~/.var}/playlist-data/mariadb-vrcxc/config:/etc/mysql/conf.d
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ${USERPROFILE:-~/.var}/playlist-data/redis/data:/data
