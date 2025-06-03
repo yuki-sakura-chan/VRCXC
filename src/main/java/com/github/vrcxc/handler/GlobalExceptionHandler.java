@@ -2,9 +2,11 @@ package com.github.vrcxc.handler;
 
 import com.github.vrcxc.exception.BaseException;
 import com.github.vrcxc.utils.R;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -60,6 +62,20 @@ public class GlobalExceptionHandler {
     public R<String> handleAuthorizationDeniedException(AuthorizationDeniedException e){
         log.error(e.getMessage(), e);
         return R.error(401, e.getMessage());
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public R<String> handleExpiredJwtException(ExpiredJwtException e ){
+        log.error(e.getMessage(), e);
+        return R.error(401, "Your token has expired. Please request a new one.");
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public R<String> handleBadCredentialsException(BadCredentialsException e) {
+        log.error(e.getMessage(), e);
+        return R.error(400, "账号或密码错误");
     }
 
 }

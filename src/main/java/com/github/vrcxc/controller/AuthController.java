@@ -44,12 +44,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(account.getUsername(), account.getPassword())
         );
         AccountVo accountVo = Optional.ofNullable(accountService.getByUsername(account.getUsername())).orElseThrow(() -> new UsernameNotFoundException("账号或密码错误"));
-        String refreshToken = jwtGenUtil.generateRefreshToken(accountVo.getUsername());
-        // 添加 refresh-token 到 cookie
-        Cookie cookie = new Cookie("refresh-token", refreshToken);
-        // 设置 cookie 为 http-only，防止 XSS 攻击
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+        jwtGenUtil.generateRefreshToken(accountVo.getUsername(), response);
         return R.success(
                 jwtGenUtil.generateToken(
                         User.builder()
@@ -61,16 +56,28 @@ public class AuthController {
     }
 
     @GetMapping(value = "/refresh-token")
-    public R<String> refreshToken(@CookieValue("refresh-token") String refreshToken) {
-        if (refreshToken == null || jwtCheckUtil.isTokenExpired(refreshToken)) {
+    public R<String> refreshToken(@CookieValue("refresh-token") String refreshToken, HttpServletResponse response) {
+        if (refreshToken == null || jwtCheckUtil.isRefreshTokenExpired(refreshToken)) {
             throw new BaseException("token已过期，请重新登录");
         }
         String username = jwtCheckUtil.extractUsername(refreshToken);
         AccountVo accountVo = Optional.ofNullable(accountService.getByUsername(username)).orElseThrow(() -> new UsernameNotFoundException("账号或密码错误"));
+        jwtGenUtil.generateRefreshToken(accountVo.getUsername(), response);
         return R.success(jwtGenUtil.generateTokenByRefreshToken(User.builder().username(accountVo.getUsername()).id(accountVo.getId()).build()));
 
     }
 
+    /**
+     * 目前无法直接验证用户是否为合法的 VRChat 用户，因此只能通过当前系统的账户信息来确保数据的合法性。
+     * 为了防止注册接口被滥用，该功能已设置为仅限管理员权限访问。
+     * <br>
+     * Currently, there is no direct method to verify whether a user is a legitimate VRChat user,
+     * so the system relies on the current account information to ensure data validity.
+     * To prevent abuse of the registration interface, this feature has been restricted to administrator access only.
+     *
+     * @param account account
+     * @return {@link R}
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/register")
     public R<Boolean> register(@RequestBody @Validated AccountDto account) {
@@ -82,6 +89,11 @@ public class AuthController {
     public R<Boolean> logout(@CookieValue("refresh-token") String refreshToken, @RequestHeader(value = "Authorization") String token) {
         jwtGenUtil.invalidateToken(token.substring(7));
         jwtGenUtil.invalidateToken(refreshToken);
+        return R.success(true);
+    }
+
+    @GetMapping(value = "/test")
+    public R<Boolean> test(){
         return R.success(true);
     }
 

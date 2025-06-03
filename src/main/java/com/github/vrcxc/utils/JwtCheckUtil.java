@@ -51,7 +51,26 @@ public class JwtCheckUtil {
         if (redissonClient.getBucket("token:" + token).isExists()) {
             return true;
         }
-        return validateToken(token).getExpiration().before(new Date());
+        Claims claims = validateToken(token);
+        if (!claims.get("token-type").equals("access")){
+            return true;
+        }
+        return claims.getExpiration().before(new Date());
+    }
+
+    public boolean isRefreshTokenExpired(String token) {
+        // 检查 token 是否在黑名单
+        if (redissonClient.getBucket("token:" + token).isExists()) {
+            return true;
+        }
+        // 检查 refresh-token 是否不可用
+        if (!redissonClient.getBucket("refresh-token:" + token).isExists()) {
+            return true;
+        }
+        Claims claims = validateToken(token);
+        // 删除 refresh-token 可用性，因为 refresh-token 为一次性工具
+        redissonClient.getBucket("refresh-token:" + token).delete();
+        return claims.getExpiration().before(new Date());
     }
 
     public String extractUsername(String token) {
