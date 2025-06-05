@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/localhost+2-key.pem
+/src/main/resources/localhost+2.pem

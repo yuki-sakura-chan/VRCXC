@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
@@ -76,6 +77,13 @@ public class GlobalExceptionHandler {
     public R<String> handleBadCredentialsException(BadCredentialsException e) {
         log.error(e.getMessage(), e);
         return R.error(400, "账号或密码错误");
+    }
+
+    @ExceptionHandler(SQLException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public R<String> handleSQLException(SQLException e) {
+        log.error(e.getMessage(), e);
+        return R.error(500, "sql异常，请联系开发者或项目管理员");
     }
 
 }
