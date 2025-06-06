@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
  * memos
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "memos")
-public class Memos extends BaseEntity {
+public class Memos extends VRCXCBaseEntity {
     @TableField(value = "user_id")
     private String userId;
 

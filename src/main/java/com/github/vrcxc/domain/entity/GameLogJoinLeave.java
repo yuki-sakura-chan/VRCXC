@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "game_log_join_leave")
-public class GameLogJoinLeave extends BaseEntity {
+public class GameLogJoinLeave extends VRCXCBaseEntity {
     @TableField(value = "created_at")
     @JsonProperty(value = "created_at")
     private String createdAt;

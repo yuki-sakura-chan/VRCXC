@@ -8,6 +8,7 @@
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="edited_at" jdbcType="LONGVARCHAR" property="editedAt" />
     <result column="memo" jdbcType="LONGVARCHAR" property="memo" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="creator" jdbcType="BIGINT" property="creator" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -16,7 +17,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, user_id, edited_at, memo, create_time, creator, update_time, updater, deleted
+    id, user_id, edited_at, memo, device_id, create_time, creator, update_time, updater, 
+    deleted
   </sql>
   <insert id="insertSelective" parameterType="com.github.vrcxc.domain.entity.Memos">
     <!--@mbg.generated-->
@@ -33,6 +35,9 @@
       </if>
       <if test="memo != null">
         memo,
+      </if>
+      <if test="deviceId != null">
+        device_id,
       </if>
       <if test="createTime != null">
         create_time,
@@ -63,6 +68,9 @@
       <if test="memo != null">
         #{memo,jdbcType=LONGVARCHAR},
       </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -92,6 +100,9 @@
       </if>
       <if test="memo != null">
         memo = #{memo,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
